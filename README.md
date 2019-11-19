@@ -9,3 +9,6 @@
     // jwt
     npm install jsonwebtoken --save
     npm install express-jwt --save
+    // Swagger
+    npm i swagger-ui-express
+    npm i swagger-jsdoc
