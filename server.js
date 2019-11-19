@@ -1,5 +1,6 @@
 const express = require("express");
 const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken');
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -29,6 +30,7 @@ let users = [
  * Get all users
  */
 app.get('/users', function (req, res) {
+
     res.send({ users });
 });
 
@@ -58,6 +60,7 @@ app.post('/user', function (req, res) {
 * Update a concrete user when the username and password exit
 */
 app.put('/user', function (req, res) {
+
     if (req.body.id === '' || req.body.username === '' || req.body.password === '') {
         res.status(502).send("Id, username and password are mandatory");
     } else {
@@ -70,6 +73,7 @@ app.put('/user', function (req, res) {
  * Delete a concrete user by id
  */
 app.delete('/user/:id', function (req, res) {
+
     let id = req.params.id;
     if (users.findIndex(item => item.id === id) < 0) {
         res.status(502).send("this id does not exist");
@@ -78,4 +82,16 @@ app.delete('/user/:id', function (req, res) {
         res.status(200).send("User removed");
     }
 });
+
+/**
+ * Get token by login
+ */
+app.post('/login', (req, res) => {
+    if (users.findIndex(item => (item.username === req.body.username &&
+        item.password === req.body.password)) < 0) {
+        res.status(401).send('wrong credentials');
+        return;
+    }
+    res.send(jwt.sign({ username: req.body.username }, secretKey, { expiresIn: 60 * 60 * 24 }));
+})
 
