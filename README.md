@@ -1,14 +1,7 @@
 # NodeExpress
+Here you can see an example of CRUD using Nodejs. It also includes Swagger and JWT to secure the process.
 
-    // Start the project
-    npm init 
-    // Install express
-    npm i express --save
-    // body-parser
-    npm install body-parser --save
-    // jwt
-    npm install jsonwebtoken --save
-    npm install express-jwt --save
-    // Swagger
-    npm i swagger-ui-express
-    npm i swagger-jsdoc
+# Run the project
+ npm run start  
+# To see the swagger documentation 
+ http://localhost:3000/docs/
