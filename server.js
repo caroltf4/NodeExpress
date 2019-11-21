@@ -2,7 +2,8 @@ const express = require("express");
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const app = express();
-
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsDoc = require('swagger-jsdoc');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -29,8 +30,33 @@ let users = [
 ];
 
 
+const swaggerOptions = {
+    swaggerDefinition: {
+        info: {
+            title: "NodeExpress API",
+            description: "User API Information",
+            contact: {
+                name: "Csoto"
+            },
+            servers: ["http://localhost:3000"]
+        }
+    },
+    apis: ["server.js"]
+};
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
 /**
- *    Use to request all users
+ * @swagger
+ * /users:
+ *  get:
+ *    description: Use to request all users
+ *    responses:
+ *      '401':
+ *        description: Invalid token
+ *      '200':
+ *        description: A successful response
  */
 app.get('/user*', function (req, res) {
     jwt.verify(getToken(req, res), secretKey, function (err, user) {
@@ -41,7 +67,28 @@ app.get('/user*', function (req, res) {
 });
 
 /**
- *     Update user 
+ * @swagger
+ * /user:
+ *  post:
+ *    description: Update user 
+ *    parameters:
+ *      - name: id
+ *        description: user id to update
+ *        required: true
+ *        type: string
+ *      - name: username
+ *        description: username to update
+ *        required: true
+ *      - name: password
+ *        description: password to update
+ *        required: true
+ *    responses:
+ *      '401':
+ *        description: Invalid token
+ *      '406':
+ *        description: Id, username and password are mandatory
+ *      '200':
+ *        description: A successful response
  */
 app.post('/user', function (req, res) {
     jwt.verify(getToken(req, res), secretKey, function (err, user) {
@@ -66,7 +113,28 @@ app.post('/user', function (req, res) {
 });
 
 /**
- *   create an user 
+ * @swagger
+ * /user:
+ *  put:
+ *    description: create an user 
+ *    parameters:
+ *      - name: id
+ *        description: user id to update
+ *        required: true
+ *        type: string
+ *      - name: username
+ *        description: username to update
+ *        required: true
+ *      - name: password
+ *        description: password to update
+ *        required: true
+ *    responses:
+ *      '401':
+ *        description: Invalid token
+ *      '406':
+ *        description: Id, username and password are mandatory
+ *      '201':
+ *        description: A successful response
  */
 app.put('/user', function (req, res) {
  
@@ -84,7 +152,22 @@ app.put('/user', function (req, res) {
 });
 
 /**
- *    detele an user 
+ * @swagger
+ * /user/{id}:
+ *  delete:
+ *    description: detele an user 
+ *    parameters:
+ *      - name: id
+ *        description: user id to update
+ *        required: true
+ *        type: string
+ *    responses:
+ *      '401':
+ *        description: Invalid token
+ *      '406':
+ *        description: Id, username and password are mandatory
+ *      '200':
+ *        description: A successful response
  */
 app.delete('/user/:id', function (req, res) {
 
@@ -102,7 +185,22 @@ app.delete('/user/:id', function (req, res) {
 });
 
 /**
- *    login to get the token
+ * @swagger
+ * /login:
+ *  post:
+ *    description: login to get the token
+ *    parameters:
+*      - name: username
+ *        description: username to update
+ *        required: true
+ *      - name: password
+ *        description: password to update
+ *        required: true
+ *    responses:
+ *      '401':
+ *        description: wrong credentials
+ *      '200':
+ *        description: A successful response
  */
 app.post('/login', (req, res) => {
         if (users.findIndex(item => (item.username === req.body.username &&
